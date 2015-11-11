@@ -1,4 +1,4 @@
-require('dotenv').load();
+require('dotenv').load({silent: true});
 
 var express = require('express');
 var exphbs = require('express-handlebars');
@@ -83,7 +83,7 @@ app.get('/', function (req, res) {
 	res.render('services', {services:data});
 });
 
-var server = app.listen(3002, function () {
+var server = app.listen(process.env.PORT || 3002, function () {
 	var host = server.address().address;
 	var port = server.address().port;
 
