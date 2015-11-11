@@ -1,0 +1,26 @@
+{
+	"timeRangeDays": 7,
+	"refreshInterval": 60000,
+	"services": {
+		"Polyfill": {
+			"pingdomCheck": 1338404,
+			"healthUrl": "https://polyfill.webservices.ft.com/__health"
+		},
+		"Image": {
+			"pingdomCheck": 1534989,
+			"healthUrl": "https://image.webservices.ft.com/__health"
+			},
+		"Build": {
+			"pingdomCheck": 1334063,
+			"healthUrl": "https://build.origami.ft.com/__health"
+		},
+		"Registry": {
+			"pingdomCheck": 1157746,
+			"healthUrl": "http://registry.origami.ft.com/__health"
+		},
+		"Codedocs": {
+			"pingdomCheck": 1874954,
+			"healthUrl": "http://codedocs.webservices.ft.com/__health"
+		}
+	}
+}
