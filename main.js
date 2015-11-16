@@ -80,6 +80,8 @@ function refresh() {
 			}),
 			!config.services[serviceName].sentryProject ? Promise.resolve() :
 			request({
+
+				// include=stats is an undocumented API extension added by Sentry at our request!  Documented in email from David Cramer to Andrew Betts on 16 November 2015
 				url: 'https://app.getsentry.com/api/0/projects/nextftcom/' + config.services[serviceName].sentryProject + '/?include=stats',
 				auth: { user: process.env.SENTRY_APIKEY, pass: '' }
 			})
