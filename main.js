@@ -80,12 +80,12 @@ function refresh() {
 			}),
 			!config.services[serviceName].sentryProject ? Promise.resolve() :
 			request({
-				url: 'https://app.getsentry.com/api/0/projects/nextftcom/' + config.services[serviceName].sentryProject + '/groups/?query=is:unresolved',
+				url: 'https://app.getsentry.com/api/0/projects/nextftcom/' + config.services[serviceName].sentryProject + '/?include=stats',
 				auth: { user: process.env.SENTRY_APIKEY, pass: '' }
 			})
 			.then(function(resp) {
 				var respdata = JSON.parse(resp);
-				newdata.errorCount = respdata.length;
+				newdata.errorCount = respdata.stats.unresolved;
 			})
 		]).then(function() {
 			newdata.serviceName = serviceName;
