@@ -4,7 +4,8 @@
 	"services": {
 		"Polyfill": {
 			"pingdomCheck": 1338404,
-			"healthUrl": "https://polyfill.webservices.ft.com/__health"
+			"healthUrl": "https://polyfill.webservices.ft.com/__health",
+			"sentryProject": "polyfill-service-prod"
 		},
 		"Image": {
 			"pingdomCheck": 1534989,
@@ -12,11 +13,13 @@
 			},
 		"Build": {
 			"pingdomCheck": 1334063,
-			"healthUrl": "https://build.origami.ft.com/__health"
+			"healthUrl": "https://build.origami.ft.com/__health",
+			"sentryProject": "build-service-prod"
 		},
 		"Registry": {
 			"pingdomCheck": 1157746,
-			"healthUrl": "http://registry.origami.ft.com/__health"
+			"healthUrl": "http://registry.origami.ft.com/__health",
+			"sentryProject": "registry"
 		},
 		"Codedocs": {
 			"pingdomCheck": 1874954,

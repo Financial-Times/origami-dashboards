@@ -6,8 +6,23 @@ var request = require('request-promise');
 var app = express();
 var config = require('./config.json');
 
-var data = [];
+var data = {services:[]};
 var periodSecs = 86400 * config.timeRangeDays;
+
+data.modulesUpdatedCount = 3;
+data.countributorsCount = 6;
+data.issuesOpenedCount = 4;
+data.issuesClosedCount = 7;
+data.modules = [
+	{moduleName:'o-grid', builds:true, outOfDateDepCount:3, supportStatus:'active', issuesOpenedCount:2, issuesClosedCount:0, commitsCount:14},
+	{moduleName:'o-share', builds:false, outOfDateDepCount:0, supportStatus:'active', issuesOpenedCount:2, issuesClosedCount:0, commitsCount:14},
+	{moduleName:'o-comments', builds:true, outOfDateDepCount:0, supportStatus:'maintained', issuesOpenedCount:0, issuesClosedCount:3, commitsCount:142},
+	{moduleName:'o-chat', builds:true, outOfDateDepCount:0, supportStatus:'deprecated', issuesOpenedCount:1, issuesClosedCount:3, commitsCount:1},
+	{moduleName:'o-grid', builds:true, outOfDateDepCount:3, supportStatus:'active', issuesOpenedCount:2, issuesClosedCount:0, commitsCount:14},
+	{moduleName:'o-share', builds:false, outOfDateDepCount:0, supportStatus:'active', issuesOpenedCount:2, issuesClosedCount:0, commitsCount:14},
+	{moduleName:'o-comments', builds:true, outOfDateDepCount:0, supportStatus:'maintained', issuesOpenedCount:0, issuesClosedCount:3, commitsCount:142},
+	{moduleName:'o-chat', builds:true, outOfDateDepCount:0, supportStatus:'deprecated', issuesOpenedCount:1, issuesClosedCount:3, commitsCount:1},
+];
 
 var hbs = exphbs.create({
     helpers: {
@@ -33,22 +48,22 @@ var pingdomRequest = function(path, opts) {
 
 function refresh() {
 	var sevenDaysAgo = Math.floor(Date.now()/1000) - periodSecs;
-	data = [];
 	Promise.all(Object.keys(config.services).map(function(serviceName) {
 		var newdata = {};
 		return Promise.all([
+			!config.services[serviceName].pingdomCheck ? Promise.resolve() :
 			pingdomRequest('summary.average/' + config.services[serviceName].pingdomCheck + '?from=' + sevenDaysAgo + '&includeuptime=true')
 			.then(function(respdata) {
 				newdata.respTime = respdata.summary.responsetime.avgresponse;
 				newdata.totalDowntime = respdata.summary.status.totaldown;
-
 			}),
+			!config.services[serviceName].pingdomCheck ? Promise.resolve() :
 			pingdomRequest('checks/' + config.services[serviceName].pingdomCheck)
 			.then(function(respdata) {
 				newdata.up = (respdata.check.status === 'up');
 				newdata.lastErrorTime = respdata.check.lasterrortime;
-
 			}),
+			!config.services[serviceName].healthUrl ? Promise.resolve() :
 			request(config.services[serviceName].healthUrl)
 			.then(function(resp) {
 				var respdata = JSON.parse(resp);
@@ -62,14 +77,23 @@ function refresh() {
 				} else {
 					newdata.health = 'blank';
 				}
+			}),
+			!config.services[serviceName].sentryProject ? Promise.resolve() :
+			request({
+				url: 'https://app.getsentry.com/api/0/projects/nextftcom/' + config.services[serviceName].sentryProject + '/groups/?query=is:unresolved',
+				auth: { user: process.env.SENTRY_APIKEY, pass: '' }
+			})
+			.then(function(resp) {
+				var respdata = JSON.parse(resp);
+				newdata.errorCount = respdata.length;
 			})
 		]).then(function() {
 			newdata.serviceName = serviceName;
-			data.push(newdata);
+			return newdata;
 		});
 	}))
-	.then(function() {
-		//console.log('Refreshed', data);
+	.then(function(allServicesData) {
+		data.services = allServicesData;
 	})
 	.catch(function(err) {
 		console.log(err.stack || err);
@@ -79,8 +103,13 @@ function refresh() {
 setInterval(refresh, config.refreshInterval);
 refresh();
 
-app.get('/', function (req, res) {
-	res.render('services', {services:data});
+app.use("/static", express.static(__dirname + '/public'));
+
+app.get('/services', function (req, res) {
+	res.render('services', data);
+});
+app.get('/modules', function (req, res) {
+	res.render('modules', data);
 });
 
 var server = app.listen(process.env.PORT || 3002, function () {

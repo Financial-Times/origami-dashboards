@@ -7,113 +7,57 @@
 	<meta name="viewport" content="width=1920, initial-scale=1.0" />
 
 	<link rel="stylesheet" href="//build.origami.ft.com/bundles/css?modules=o-fonts@^2.0.0" />
-	<style>
-	* {
-		box-sizing:border-box;
-	}
-	body, html {
-		height: 100%;
-		overflow: hidden;
-		background: black;
-		color: white;
-		font-size: 4vh;
-		font-family: MetricWeb;
-		margin: 0;
-		padding: 0;
-	}
-
-
-	.cols { display: flex; flex-flow: row; }
-	.rows { display: flex; flex-flow: column; }
-	.cols > *, .rows > * { flex: 0 1 auto; position: relative; }
-	.stretch { flex-grow: 1; }
-	.snap { position: absolute; top: 0; left: 0; bottom: 0; right: 0; width: 100%; height: 100%;}
-
-
-	ol.head { list-style-type: none; padding:0; margin: 0 0 0 20vw; }
-	ol.head li { display: block; }
-	ol.service { list-style-type: none; padding:0; margin: 0; }
-	ol.service li { display: block; }
-
-	h1 {
-		font-weight: 400;
-		margin: 1vw;
-	}
-	th, td {
-		font-weight: normal;
-		overflow:hidden;
-		padding: 1.5vh 2vw;
-		width: 20%;
-	}
-	.canvas {
-		margin: 1vw;
-	}
-	td.servicename {
-		vertical-align: middle;
-	}
-	.stat {
-		padding: 3.5vh 0;
-		text-align: center;
-		display: block;
-		vertical-align: middle;
-		background-color: #4E4E4E;
-		width: 100%;
-	}
-	.stat-good {
-		background-color: #127D1C;
-	}
-	.stat-oooer {
-		background-color: #BB9F31;
-	}
-	.stat-crikey {
-		background-color: #E67700;
-	}
-	.stat-bad {
-		background-color: #800;
-	}
-	</style>
-
+	<link rel="stylesheet" href="/static/css/style.css" />
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0-alpha1/jquery.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.2.0/css/font-awesome.min.css" />
 </head>
 <body class='rows'>
-	<h1>Origami services</h1>
-	<div class='stretch canvas'>
-		<table class='snap'>
-		<tr class='head'>
-			<th></th>
-			<th>Status</th>
-			<th>Speed</th>
-			<th>Downtime</th>
-			<th>Health</th>
-		</tr>
-		{{#each services}}
-		<tr>
-			<td class='servicename'>{{serviceName}}</td>
+	<h1>Origami services status</h1>
+	<div class='stretch servicestable'>
+		<div class='snap'>
+			<table>
+			<tr class='head'>
+				<th></th>
+				<th><h2>Status</h2></th>
+				<th><h2>API Perf</h2></th>
+				<th><h2>Downtime</h2></th>
+				<th><h2>Health</h2></th>
+				<th><h2>Errors</h2></th>
+			</tr>
+			{{#each services}}
+			<tr>
+				<td class='servicename'>{{serviceName}}</td>
 
-			{{#if up}}<td><div class='stat stat-good'><i class="fa fa-check"></i></div></td>
-			{{else}}<td><div class='stat stat-bad'><i class="fa fa-times"></i></div></td>
-			{{/if}}
+				{{#if up}}<td><div class='stat stat-good'><i class="fa fa-check"></i></div></td>
+				{{else}}<td><div class='stat stat-bad'><i class="fa fa-times"></i></div></td>
+				{{/if}}
 
-			{{#ifRange respTime 0 150}}<td><div class='stat stat-good'>{{/ifRange}}
-			{{#ifRange respTime 150 300}}<td><div class='stat stat-oooer'>{{/ifRange}}
-			{{#ifRange respTime 300 1000}}<td><div class='stat stat-crikey'>{{/ifRange}}
-			{{#ifRange respTime 1000 999999}}<td><div class='stat stat-bad'>{{/ifRange}}
-			{{respTime}}ms</div></td>
+				{{#ifRange respTime 0 150}}<td><div class='stat stat-good'>{{/ifRange}}
+				{{#ifRange respTime 150 300}}<td><div class='stat stat-oooer'>{{/ifRange}}
+				{{#ifRange respTime 300 1000}}<td><div class='stat stat-crikey'>{{/ifRange}}
+				{{#ifRange respTime 1000 999999}}<td><div class='stat stat-bad'>{{/ifRange}}
+				{{respTime}}ms</div></td>
 
-			{{#ifEq totalDowntime 0}}<td><div class='stat stat-good'>None</div></td>{{/ifEq}}
-			{{#ifRange totalDowntime 1 300}}<td><div class='stat stat-crikey'>{{totalDowntime}}s</div></td>{{/ifRange}}
-			{{#ifRange totalDowntime 300 999999}}<td><div class='stat stat-bad'>{{totalDowntime}}s</div></td>{{/ifRange}}
+				{{#ifEq totalDowntime 0}}<td><div class='stat stat-good'>None</div></td>{{/ifEq}}
+				{{#ifRange totalDowntime 1 300}}<td><div class='stat stat-crikey'>{{totalDowntime}}s</div></td>{{/ifRange}}
+				{{#ifRange totalDowntime 300 999999}}<td><div class='stat stat-bad'>{{totalDowntime}}s</div></td>{{/ifRange}}
 
-			{{#ifEq health 4}}<td><div class='stat stat-good'><i class="fa fa-check"></i></div></td>{{/ifEq}}
-			{{#ifEq health 3}}<td><div class='stat stat-oooer'><i class="fa fa-exclamation-triangle"></i></div></td>{{/ifEq}}
-			{{#ifEq health 2}}<td><div class='stat stat-crikey'><i class="fa fa-exclamation-triangle"></i></div></td>{{/ifEq}}
-			{{#ifEq health 1}}<td><div class='stat stat-bad'><i class="fa fa-times"></i></div></td>{{/ifEq}}
-			{{#ifEq health "blank"}}<td><div class='stat stat-oooer'><i class="fa fa-exclamation-triangle"></i></div></td>{{/ifEq}}
-			{{#ifNot health}}<td><div class='stat stat-dunno'><i class="fa fa-question"></i></div></td>{{/ifNot}}
-		</tr>
-		{{/each}}
+				{{#ifEq health 4}}<td><div class='stat stat-good'><i class="fa fa-check"></i></div></td>{{/ifEq}}
+				{{#ifEq health 3}}<td><div class='stat stat-oooer'><i class="fa fa-exclamation-triangle"></i></div></td>{{/ifEq}}
+				{{#ifEq health 2}}<td><div class='stat stat-crikey'><i class="fa fa-exclamation-triangle"></i></div></td>{{/ifEq}}
+				{{#ifEq health 1}}<td><div class='stat stat-bad'><i class="fa fa-times"></i></div></td>{{/ifEq}}
+				{{#ifEq health "blank"}}<td><div class='stat stat-oooer'><i class="fa fa-exclamation-triangle"></i></div></td>{{/ifEq}}
+				{{#ifNot health}}<td><div class='stat stat-unknown'><i class="fa fa-question"></i></div></td>{{/ifNot}}
+
+				{{#ifEq errorCount 0}}<td><div class='stat stat-good'>None</div></td>{{/ifEq}}
+				{{#ifRange errorCount 1 5}}<td><div class='stat stat-crikey'>{{errorCount}}</div></td>{{/ifRange}}
+				{{#ifRange errorCount 5 999999}}<td><div class='stat stat-bad'>{{errorCount}}</div></td>{{/ifRange}}
+
+			</tr>
+			{{/each}}
+			</table>
+		</div>
 	</div>
 </body>
 </html>
