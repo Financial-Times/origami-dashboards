@@ -1,0 +1,15 @@
+{
+	"schemaVersion": 1,
+	"name": "origami-dashboards",
+	"purpose": "Displays glanceable information about the status of Origami services and modules",
+	"audience": "public",
+	"serviceTier": "bronze",
+	"dateCreated": "2015-11-24",
+	"contacts": [
+		{ "name":"Origami team", "email":"origami-support@ft.com", "rel":"owner", "domain":"All support enquiries" }
+	],
+	"links": [
+		{ "url":"https://github.com/Financial-Times/origami-dashboards", "category":"repo" },
+		{ "url":"https://dashboard.heroku.com/apps/origami-dashboards", "category":"deployment", "description":"Heroku app control panel"}
+	]
+}
