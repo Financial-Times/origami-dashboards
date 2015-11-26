@@ -1,8 +1,10 @@
 require('dotenv').load({silent: true});
 
+var path = require('path');
 var express = require('express');
 var exphbs = require('express-handlebars');
 var request = require('request-promise');
+var ftwebservice = require('express-ftwebservice');
 var app = express();
 var config = require('./config.json');
 
@@ -104,6 +106,12 @@ function refresh() {
 
 setInterval(refresh, config.refreshInterval);
 refresh();
+
+ftwebservice(app, {
+	manifestPath: path.join(__dirname, '/package.json'),
+	about: require('./about.json')
+});
+
 
 app.use("/static", express.static(__dirname + '/public'));
 
