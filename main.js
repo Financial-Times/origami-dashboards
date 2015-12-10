@@ -5,26 +5,28 @@ var express = require('express');
 var exphbs = require('express-handlebars');
 var request = require('request-promise');
 var ftwebservice = require('express-ftwebservice');
-var app = express();
+var PromiseBatch = require('./lib/promisebatch');
+var apis = {
+	registry: require('./lib/apis/registry'),
+	pingdom: require('./lib/apis/pingdom'),
+	github: require('./lib/apis/github'),
+	health: require('./lib/apis/health'),
+	sentry: require('./lib/apis/sentry')
+};
 var config = require('./config.json');
 
-var data = {services:[]};
+var app = express();
+
+var data = {services:[], modules:[]};
 var periodSecs = 86400 * config.timeRangeDays;
+
+apis.github.setPeriod(periodSecs);
 
 data.modulesUpdatedCount = 3;
 data.countributorsCount = 6;
 data.issuesOpenedCount = 4;
 data.issuesClosedCount = 7;
-data.modules = [
-	{moduleName:'o-grid', builds:true, outOfDateDepCount:3, supportStatus:'active', issuesOpenedCount:2, issuesClosedCount:0, commitsCount:14},
-	{moduleName:'o-share', builds:false, outOfDateDepCount:0, supportStatus:'active', issuesOpenedCount:2, issuesClosedCount:0, commitsCount:14},
-	{moduleName:'o-comments', builds:true, outOfDateDepCount:0, supportStatus:'maintained', issuesOpenedCount:0, issuesClosedCount:3, commitsCount:142},
-	{moduleName:'o-chat', builds:true, outOfDateDepCount:0, supportStatus:'deprecated', issuesOpenedCount:1, issuesClosedCount:3, commitsCount:1},
-	{moduleName:'o-grid', builds:true, outOfDateDepCount:3, supportStatus:'active', issuesOpenedCount:2, issuesClosedCount:0, commitsCount:14},
-	{moduleName:'o-share', builds:false, outOfDateDepCount:0, supportStatus:'active', issuesOpenedCount:2, issuesClosedCount:0, commitsCount:14},
-	{moduleName:'o-comments', builds:true, outOfDateDepCount:0, supportStatus:'maintained', issuesOpenedCount:0, issuesClosedCount:3, commitsCount:142},
-	{moduleName:'o-chat', builds:true, outOfDateDepCount:0, supportStatus:'deprecated', issuesOpenedCount:1, issuesClosedCount:3, commitsCount:1},
-];
+
 
 var hbs = exphbs.create({
     helpers: {
@@ -36,73 +38,67 @@ var hbs = exphbs.create({
 app.engine('handlebars', hbs.engine);
 app.set('view engine', 'handlebars');
 
-var pingdomRequest = function(path, opts) {
-	opts = opts || {};
-	return request(Object.assign({
-		url: 'https://api.pingdom.com/api/2.0/'+path,
-		headers: { 'app-key': process.env.PINGDOM_APIKEY, 'Account-Email': process.env.PINGDOM_ACCOUNT },
-		auth: { user: process.env.PINGDOM_USERNAME, pass: process.env.PINGDOM_PASSWORD }
-	}, opts))
-	.then(function(response) {
-		return JSON.parse(response);
-	});
-}
 
 function refresh() {
-	var sevenDaysAgo = Math.floor(Date.now()/1000) - periodSecs;
-	Promise.all(Object.keys(config.services).map(function(serviceName) {
-		var newdata = {};
-		return Promise.all([
-			!config.services[serviceName].pingdomCheck ? Promise.resolve() :
-			pingdomRequest('summary.average/' + config.services[serviceName].pingdomCheck + '?from=' + sevenDaysAgo + '&includeuptime=true')
-			.then(function(respdata) {
-				newdata.respTime = respdata.summary.responsetime.avgresponse;
-				newdata.totalDowntime = respdata.summary.status.totaldown;
-			}),
-			!config.services[serviceName].pingdomCheck ? Promise.resolve() :
-			pingdomRequest('checks/' + config.services[serviceName].pingdomCheck)
-			.then(function(respdata) {
-				newdata.up = (respdata.check.status === 'up');
-				newdata.lastErrorTime = respdata.check.lasterrortime;
-			}),
-			!config.services[serviceName].healthUrl ? Promise.resolve() :
-			request(config.services[serviceName].healthUrl)
-			.then(function(resp) {
-				var respdata = JSON.parse(resp);
-				if (respdata.checks) {
-					newdata.health = respdata.checks.reduce(function(out, check) {
-						if (!check.ok && check.severity < out) {
-							out = check.severity;
-						}
-						return out;
-					}, 4)
-				} else {
-					newdata.health = 'blank';
-				}
-			}),
-			!config.services[serviceName].sentryProject ? Promise.resolve() :
-			request({
+	var startTime = Math.floor(Date.now()/1000) - periodSecs;
+	var newModuleData = {};
+	var newServicesData = {};
 
-				// include=stats is an undocumented API extension added by Sentry at our request!  Documented in email from David Cramer to Andrew Betts on 16 November 2015
-				url: 'https://app.getsentry.com/api/0/projects/nextftcom/' + config.services[serviceName].sentryProject + '/?include=stats',
-				auth: { user: process.env.SENTRY_APIKEY, pass: '' }
-			})
-			.then(function(resp) {
-				var respdata = JSON.parse(resp);
-				newdata.errorCount = respdata.stats.unresolved;
-			})
-		]).then(function() {
-			newdata.serviceName = serviceName;
-			return newdata;
+	var batch = new PromiseBatch();
+	batch.setConcurrency(4);
+
+	Object.keys(config.services).forEach(function(serviceName) {
+		var svc = config.services[serviceName];
+		if (svc.pingdomCheck) {
+			batch.push(apis.pingdom.getHistory.bind(null, svc.pingdomCheck, startTime)).then(function(res) {
+				newServicesData[serviceName] = Object.assign({}, newServicesData[serviceName], res);
+			});
+			batch.push(apis.pingdom.getCurrentStatus.bind(null, svc.pingdomCheck)).then(function(res) {
+				newServicesData[serviceName] = Object.assign({}, newServicesData[serviceName], res);
+			});
+		}
+		if (svc.healthUrl) {
+			batch.push(apis.health.getOverallSeverity.bind(null, svc.healthUrl)).then(function(res) {
+				newServicesData[serviceName].health = res;
+			});
+		}
+		if (svc.sentryProject) {
+			batch.push(apis.sentry.getUnresolvedErrorCount.bind(null, 'nextftcom', svc.sentryProject)).then(function(res) {
+				newServicesData[serviceName].errorCount = res;
+			});
+		}
+	});
+
+	batch.push(apis.registry.listModules).then(function(modules) {
+		modules.forEach(function(mod) {
+			batch.push(apis.registry.getModuleDetails.bind(null, mod.name)).then(function(res) {
+				newModuleData[mod.name] = Object.assign({}, newModuleData[mod.name], res);
+			});
+			batch.push(apis.github.getEventStats.bind(null, mod.org, mod.repo)).then(function(res) {
+				newModuleData[mod.name] = Object.assign({}, newModuleData[mod.name], res);
+			});
 		});
-	}))
-	.then(function(allServicesData) {
-		data.services = allServicesData;
-	})
-	.catch(function(err) {
-		console.log(err.stack || err);
+	});
+
+	batch.run().then(function() {
+		data.modules = Object.keys(newModuleData)
+			.map(function(moduleName) {
+				return newModuleData[moduleName];
+			}).sort(function(modA, modB) {
+				var a = (modA.recentCommitCount || 0) + (modA.issuesClosedCount || 0) + (modA.issuesOpenedCount || 0);
+				var b = (modB.recentCommitCount || 0) + (modB.issuesClosedCount || 0) + (modB.issuesOpenedCount || 0);
+				return a > b ? -1 : 1;
+			}).slice(0, 10);
+		;
+		data.services = Object.keys(newServicesData)
+			.map(function(serviceName) {
+				return Object.assign({serviceName: serviceName}, newServicesData[serviceName]);
+			})
+		;
+		console.log('New data', data);
 	});
 }
+
 
 setInterval(refresh, config.refreshInterval);
 refresh();
