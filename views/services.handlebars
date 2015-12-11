@@ -5,7 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<title>Services dashboard - Origami</title>
 	<meta name="viewport" content="width=1920, initial-scale=1.0" />
-	<meta http-equiv="refresh" content="10">
+	<meta http-equiv="refresh" content="60">
 
 	<link rel="stylesheet" href="//build.origami.ft.com/bundles/css?modules=o-fonts@^2.0.0" />
 	<link rel="stylesheet" href="/static/css/style.css" />
@@ -28,7 +28,7 @@
 			</tr>
 			{{#each services}}
 			<tr>
-				<td class='servicename'>{{serviceName}}</td>
+				<td class='servicename'>{{name}}</td>
 
 				{{#if up}}<td><div class='stat stat-good'><i class="fa fa-check"></i></div></td>
 				{{else}}<td><div class='stat stat-bad'><i class="fa fa-times"></i></div></td>
@@ -44,7 +44,7 @@
 				{{#ifRange totalDowntime 1 300}}<td><div class='stat stat-crikey'>{{totalDowntime}}s</div></td>{{/ifRange}}
 				{{#ifRange totalDowntime 300 999999}}<td><div class='stat stat-bad'>{{totalDowntime}}s</div></td>{{/ifRange}}
 
-				{{#ifEq health 4}}<td><div class='stat stat-good'><i class="fa fa-check"></i></div></td>{{/ifEq}}
+				{{#ifEq health -1}}<td><div class='stat stat-good'><i class="fa fa-check"></i></div></td>{{/ifEq}}
 				{{#ifEq health 3}}<td><div class='stat stat-oooer'><i class="fa fa-exclamation-triangle"></i></div></td>{{/ifEq}}
 				{{#ifEq health 2}}<td><div class='stat stat-crikey'><i class="fa fa-exclamation-triangle"></i></div></td>{{/ifEq}}
 				{{#ifEq health 1}}<td><div class='stat stat-bad'><i class="fa fa-times"></i></div></td>{{/ifEq}}

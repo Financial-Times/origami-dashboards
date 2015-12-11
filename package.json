@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "start": "node main.js"
+    "start": "node --use-strict main.js"
   },
   "dependencies": {
     "batch": "^0.5.3",

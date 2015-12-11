@@ -1,6 +1,6 @@
 {
 	"timeRangeDays": 7,
-	"refreshInterval": 300000,
+	"refreshInterval": 60,
 	"services": {
 		"Polyfill": {
 			"pingdomCheck": 1338404,

@@ -5,7 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
 	<title>Modules dashboard - Origami</title>
 	<meta name="viewport" content="width=1920, initial-scale=1.0" />
-	<meta http-equiv="refresh" content="10">
+	<meta http-equiv="refresh" content="60">
 
 	<link rel="stylesheet" href="//build.origami.ft.com/bundles/css?modules=o-fonts@^2.0.0" />
 	<link rel="stylesheet" href="/static/css/style.css" />
@@ -22,7 +22,7 @@
 		</div>
 		<div class='statwrap stretch'>
 			<h2>Contributors</h2>
-			<div class='stat'>{{countributorsCount}}</div>
+			<div class='stat'>{{contributorsCount}}</div>
 		</div>
 		<div class='statwrap stretch'>
 			<h2>Issues opened/closed</h2>
@@ -34,33 +34,42 @@
 			<table>
 			<tr class='head'>
 				<th></th>
-				<th><h2>Build status</h2></th>
-				<th><h2>Dependenices</h2></th>
-				<th><h2>Support status</h2></th>
+				<th><h2>Build</h2></th>
+				<th><h2>Deps</h2></th>
+				<th><h2>Supported</h2></th>
 				<th><h2>Issues</h2></th>
-				<th><h2>Commits</h2></th>
+				<th><h2>Pushes</h2></th>
+				<th><h2>Contributors</h2></th>
 			</tr>
 			{{#each modules}}
 			<tr>
-				<td class='modulename'>{{moduleName}}</td>
+				<td class='modulename'>{{name}}</td>
 
-				{{#if builds}}<td><div class='ministat ministat-good'><i class="fa fa-check"></i></div></td>
-				{{else}}<td><div class='ministat ministat-bad'><i class="fa fa-times"></i></div></td>
+				<td>
+				{{#if isValid}}<div class='ministat ministat-good'><i class="fa fa-check"></i></div>
+				{{else}}<div class='ministat ministat-bad'><i class="fa fa-times"></i></div>
 				{{/if}}
+				</td>
 
-				{{#ifEq outOfDateDepCount 0}}<td><div class='ministat ministat-good'><i class="fa fa-check"></i></div></td>
-				{{else}}<td><div class='ministat ministat-oooer'><i class="fa fa-exclamation-triangle"></i> {{outOfDateDepCount}}</div></td>
+				<td>
+				{{#ifEq outOfDateDepCount 0}}<div class='ministat ministat-good'><i class="fa fa-check"></i></div>
+				{{else}}<div class='ministat ministat-oooer'><i class="fa fa-exclamation-triangle"></i> {{outOfDateDepCount}}</div>
 				{{/ifEq}}
+				</td>
 
-				{{#ifEq supportStatus "active"}}<td><div class='ministat ministat-good'>{{supportStatus}}</div></td>{{/ifEq}}
-				{{#ifEq supportStatus "experiental"}}<td><div class='ministat ministat-oooer'>{{supportStatus}}</div></td>{{/ifEq}}
-				{{#ifEq supportStatus "maintained"}}<td><div class='ministat ministat-oooer'>{{supportStatus}}</div></td>{{/ifEq}}
-				{{#ifEq supportStatus "deprecated"}}<td><div class='ministat ministat-oooer'>{{supportStatus}}</div></td>{{/ifEq}}
-				{{#ifEq supportStatus "dead"}}<td><div class='ministat ministat-bad'>{{supportStatus}}</div></td>{{/ifEq}}
+				<td>
+				{{#ifEq supportStatus "active"}}<div class='ministat ministat-good'>{{supportStatus}}</div>{{/ifEq}}
+				{{#ifEq supportStatus "experimental"}}<div class='ministat ministat-oooer'>{{supportStatus}}</div>{{/ifEq}}
+				{{#ifEq supportStatus "maintained"}}<div class='ministat ministat-oooer'>{{supportStatus}}</div>{{/ifEq}}
+				{{#ifEq supportStatus "deprecated"}}<div class='ministat ministat-oooer'>{{supportStatus}}</div>{{/ifEq}}
+				{{#ifEq supportStatus "dead"}}<div class='ministat ministat-bad'>{{supportStatus}}{{/ifEq}}
+				</td>
 
 				<td><div class='ministat'>{{issuesOpenedCount}} / {{issuesClosedCount}}</div></td>
 
-				<td><div class='ministat'>{{commitsCount}}</div></td>
+				<td><div class='ministat'>{{pushCount}}</div></td>
+
+				<td><div class='ministat'>{{contributorsCount}}</div></td>
 			</tr>
 			{{/each}}
 			</table>
