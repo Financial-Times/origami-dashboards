@@ -25,14 +25,14 @@ ftwebservice(app, {
 
 app.use("/static", express.static(__dirname + '/public'));
 
-app.get('/services', function (req, res) {
+app.get('/services', (req, res) => {
 	res.render('services', source.getServices());
 });
 
-app.get('/modules', function (req, res) {
+app.get('/modules', (req, res) => {
 	res.render('modules', source.getModules());
 });
 
-const server = app.listen(process.env.PORT || 3002, function () {
+const server = app.listen(process.env.PORT || 3002, () => {
 	console.log('Listening at http://%s:%s', server.address().address, server.address().port);
 });
