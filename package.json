@@ -7,7 +7,7 @@
     "directly": "^2.0.4",
     "dotenv": "^1.2.0",
     "express": "^4.13.3",
-    "express-ftwebservice": "git+http://git.svc.ft.com:8080/scm/ot/express-ftwebservice.git",
+    "express-ftwebservice": "^2.0.2",
     "express-handlebars": "^2.0.1",
     "moment": "^2.10.6",
     "request-promise": "^1.0.2"
