@@ -9,7 +9,8 @@
 		},
 		"Image": {
 			"pingdomCheck": 1534989,
-			"healthUrl": "https://image.webservices.ft.com/__health"
+			"healthUrl": "https://image.webservices.ft.com/__health",
+			"sentryProject": "image-service"
 			},
 		"Build": {
 			"pingdomCheck": 1334063,
@@ -23,7 +24,8 @@
 		},
 		"Codedocs": {
 			"pingdomCheck": 1874954,
-			"healthUrl": "http://codedocs.webservices.ft.com/__health"
+			"healthUrl": "http://codedocs.webservices.ft.com/__health",
+			"sentryProject": "code-docs-service"
 		}
 	}
 }
