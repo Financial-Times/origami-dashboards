@@ -9,6 +9,8 @@
     "express": "^4.13.3",
     "express-ftwebservice": "^2.0.2",
     "express-handlebars": "^2.0.1",
+    "graphite": "0.0.6",
+    "measured": "^1.1.0",
     "moment": "^2.10.6",
     "request-promise": "^1.0.2"
   }
