@@ -14,7 +14,7 @@
 			},
 		"Build": {
 			"pingdomCheck": 1334063,
-			"healthUrl": "https://build.origami.ft.com/__health",
+			"healthUrl": "https://origami-build.ft.com/__health",
 			"sentryProject": "build-service-prod"
 		},
 		"Registry": {
