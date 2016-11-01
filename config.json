@@ -5,32 +5,38 @@
 		"Polyfill": {
 			"pingdomCheck": 1338404,
 			"healthUrl": "https://polyfill.webservices.ft.com/__health",
-			"sentryProject": "polyfill-service-prod"
+			"sentryProject": "polyfill-service-prod",
+			"responseTimes": [150, 300, 1000]
 		},
 		"Image": {
 			"pingdomCheck": 1534989,
 			"healthUrl": "https://image.webservices.ft.com/__health",
-			"sentryProject": "image-service"
+			"sentryProject": "image-service",
+			"responseTimes": [150, 300, 1000]
 			},
 		"Build": {
 			"pingdomCheck": 1334063,
 			"healthUrl": "https://origami-build.ft.com/__health",
-			"sentryProject": "build-service-prod"
+			"sentryProject": "build-service-prod",
+			"responseTimes": [150, 300, 1000]
 		},
 		"Registry": {
 			"pingdomCheck": 1157746,
 			"healthUrl": "http://registry.origami.ft.com/__health",
-			"sentryProject": "registry"
+			"sentryProject": "registry",
+			"responseTimes": [1000, 2000, 2500]
 		},
 		"Codedocs": {
 			"pingdomCheck": 1874954,
 			"healthUrl": "http://codedocs.webservices.ft.com/__health",
-			"sentryProject": "code-docs-service"
+			"sentryProject": "code-docs-service",
+			"responseTimes": [150, 300, 1000]
 		},
 		"Image V2 (EU)": {
 			"pingdomCheck": 2301115,
 			"healthUrl": "https://origami-image-service-eu.herokuapp.com/__health",
-			"sentryProject": "origami-image-service-producti"
+			"sentryProject": "origami-image-service-producti",
+			"responseTimes": [150, 300, 1000]
 		}
 	}
 }

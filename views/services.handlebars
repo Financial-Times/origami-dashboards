@@ -33,10 +33,10 @@
 				{{else}}<td><div class='stat stat-bad'><i class="fa fa-times"></i></div></td>
 				{{/if}}
 
-				{{#ifRange respTime 0 150}}<td><div class='stat stat-good'>{{/ifRange}}
-				{{#ifRange respTime 150 300}}<td><div class='stat stat-oooer'>{{/ifRange}}
-				{{#ifRange respTime 300 1000}}<td><div class='stat stat-crikey'>{{/ifRange}}
-				{{#ifRange respTime 1000 999999}}<td><div class='stat stat-bad'>{{/ifRange}}
+				{{#ifEq responseTimeHealth 0}}<td><div class='stat stat-good'>{{/ifEq}}
+				{{#ifEq responseTimeHealth 1}}<td><div class='stat stat-oooer'>{{/ifEq}}
+				{{#ifEq responseTimeHealth 2}}<td><div class='stat stat-crikey'>{{/ifEq}}
+				{{#ifEq responseTimeHealth 3}}<td><div class='stat stat-bad'>{{/ifEq}}
 				{{respTime}}ms</div></td>
 
 				{{#ifEq totalDowntime 0}}<td><div class='stat stat-good'>None</div></td>{{/ifEq}}
