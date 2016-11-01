@@ -26,6 +26,11 @@
 			"pingdomCheck": 1874954,
 			"healthUrl": "http://codedocs.webservices.ft.com/__health",
 			"sentryProject": "code-docs-service"
+		},
+		"Image V2 (EU)": {
+			"pingdomCheck": 2301115,
+			"healthUrl": "https://origami-image-service-eu.herokuapp.com/__health",
+			"sentryProject": "origami-image-service-producti"
 		}
 	}
 }
