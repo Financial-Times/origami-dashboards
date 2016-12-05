@@ -15,7 +15,7 @@
 			"responseTimes": [150, 300, 1000]
 			},
 		"Build": {
-			"pingdomCheck": 1334063,
+			"pingdomCheck": 2399543,
 			"healthUrl": "https://origami-build.ft.com/__health",
 			"sentryProject": "build-service-prod",
 			"responseTimes": [150, 300, 1000]
