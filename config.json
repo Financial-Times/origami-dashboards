@@ -4,7 +4,7 @@
 	"services": {
 		"Polyfill": {
 			"pingdomCheck": 1338404,
-			"healthUrl": "https://polyfill.webservices.ft.com/__health",
+			"healthUrl": "https://polyfill.io/__health",
 			"sentryProject": "polyfill-service-prod",
 			"responseTimes": [150, 300, 1000]
 		},
