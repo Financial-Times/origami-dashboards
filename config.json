@@ -3,7 +3,7 @@
 	"refreshInterval": 300,
 	"services": {
 		"Polyfill": {
-			"pingdomCheck": 1338404,
+			"pingdomCheck": 1338405,
 			"healthUrl": "https://polyfill.io/__health",
 			"sentryProject": "polyfill-service-prod",
 			"responseTimes": [150, 300, 1000]
