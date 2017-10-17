@@ -3,15 +3,15 @@
     "start": "node --use-strict main.js"
   },
   "dependencies": {
-    "batch": "^0.5.3",
+    "batch": "^0.6.1",
     "directly": "^2.0.4",
-    "dotenv": "^1.2.0",
+    "dotenv": "^4.0.0",
     "express": "^4.13.3",
     "express-ftwebservice": "^2.0.2",
-    "express-handlebars": "^2.0.1",
-    "graphite": "0.0.6",
+    "express-handlebars": "^3.0.0",
+    "graphite": "0.0.7",
     "measured": "^1.1.0",
     "moment": "^2.10.6",
-    "request-promise": "^1.0.2"
+    "request-promise": "^4.2.2"
   }
 }
