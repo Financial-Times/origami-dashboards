@@ -1,0 +1,7 @@
+{
+	"checkPolicies": true,
+	"projectName": "origami-dashboards",
+	"productName": "origami-dashboards",
+	"devDep": false,
+	"failOnError": true
+}
