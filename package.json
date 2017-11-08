@@ -3,6 +3,7 @@
     "start": "node --use-strict main.js"
   },
   "dependencies": {
+    "@financial-times/origami-service-makefile": "^6.0.1",
     "batch": "^0.5.3",
     "directly": "^2.0.4",
     "dotenv": "^1.2.0",
@@ -13,5 +14,8 @@
     "measured": "^1.1.0",
     "moment": "^2.10.6",
     "request-promise": "^1.0.2"
+  },
+  "devDependencies": {
+    "eslint": "^4.10.0"
   }
 }

@@ -1,4 +1,6 @@
-require('dotenv').load({silent: true});
+'use strict';
+
+require('dotenv').load({ silent: true });
 
 const path = require('path');
 const express = require('express');
