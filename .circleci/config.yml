@@ -1,0 +1,24 @@
+version: 2
+jobs:
+  test:
+    docker:
+      - image: circleci/node:8-browsers
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: Install dependencies
+          command: npm install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: Run tests
+          command: make ci
+workflows:
+  version: 2
+  test:
+    jobs:
+      - test
