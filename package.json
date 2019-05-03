@@ -13,7 +13,7 @@
     "express-handlebars": "^2.0.1",
     "graphite": "0.0.6",
     "measured": "^1.1.0",
-    "moment": "^2.10.6",
+    "moment": "^2.19.3",
     "request-promise": "^1.0.2"
   },
   "devDependencies": {
